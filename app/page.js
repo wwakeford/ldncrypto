@@ -36,7 +36,13 @@ export default function Home() {
 
       // Extract unique main categories (not original_category)
       const uniqueCategories = [...new Set(data?.map(c => c.category).filter(Boolean))]
-      setCategories(uniqueCategories.sort())
+      // Sort categories alphabetically but put "Other" at the end
+      const sortedCategories = uniqueCategories.sort((a, b) => {
+        if (a === 'Other') return 1
+        if (b === 'Other') return -1
+        return a.localeCompare(b)
+      })
+      setCategories(sortedCategories)
     } catch (error) {
       console.error('Error fetching companies:', error)
     } finally {
@@ -215,10 +221,36 @@ export default function Home() {
       <div className="text-center py-12 px-4" style={{ backgroundColor: 'var(--forest-mist)' }}>
         <div className="max-w-4xl mx-auto">
           <p className="text-lg font-medium mb-3" style={{ color: 'var(--charcoal)' }}>
-            MEMPOOL.LON aims to serve as a living directory of ongoing and emerging blockchain companies in London.
+            In an attempt at solving the fragmented London crypto scene - enjoy the free value.
           </p>
           <p className="text-base leading-relaxed" style={{ color: 'var(--slate-gray)' }}>
-            This data is a mix of public online sources, companies submitting their data here directly, and the city's offchain gossip network.
+            Idea & data by{' '}
+            <a 
+              href="https://x.com/_JonathanBreton" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="font-medium transition-all duration-200 underline decoration-2 hover:opacity-80 hover:decoration-4"
+              style={{ 
+                color: 'var(--british-racing-green)',
+                textDecorationColor: 'var(--british-racing-green)'
+              }}
+            >
+              @_JonathanBreton
+            </a>
+            {' '}coded by{' '}
+            <a 
+              href="https://x.com/willbuysdips" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="font-medium transition-all duration-200 underline decoration-2 hover:opacity-80 hover:decoration-4"
+              style={{ 
+                color: 'var(--british-racing-green)',
+                textDecorationColor: 'var(--british-racing-green)'
+              }}
+            >
+              @willbuysdips
+            </a>
+            .
           </p>
         </div>
       </div>

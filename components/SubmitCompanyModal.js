@@ -62,6 +62,14 @@ export default function SubmitCompanyModal({ isOpen, onClose }) {
         subject: `New Company Submission: ${formData.companyName}`
       }
 
+      // Initialize EmailJS (in case it's not initialized)
+      try {
+        emailjs.init(publicKey)
+        console.log('EmailJS initialized successfully')
+      } catch (initError) {
+        console.error('EmailJS initialization error:', initError)
+      }
+
       // Send email using EmailJS
       console.log('Sending email with params:', {
         serviceId,
@@ -70,12 +78,33 @@ export default function SubmitCompanyModal({ isOpen, onClose }) {
         publicKey: '[REDACTED]'
       })
       
-      const result = await emailjs.send(
-        serviceId,
-        templateId,
-        emailParams,
-        publicKey
-      )
+      // Wrap EmailJS call with additional error handling
+      let result
+      try {
+        console.log('About to call emailjs.send...')
+        result = await emailjs.send(
+          serviceId,
+          templateId,
+          emailParams,
+          publicKey
+        )
+        console.log('EmailJS call completed successfully')
+      } catch (emailError) {
+        console.error('EmailJS send failed:', emailError)
+        
+        // Check for common EmailJS error patterns
+        if (emailError.status === 400) {
+          throw new Error(`EmailJS Bad Request (400): ${emailError.text || 'Invalid parameters or template'}`)
+        } else if (emailError.status === 401) {
+          throw new Error(`EmailJS Unauthorized (401): ${emailError.text || 'Invalid public key or service ID'}`)
+        } else if (emailError.status === 404) {
+          throw new Error(`EmailJS Not Found (404): ${emailError.text || 'Service or template not found'}`)
+        } else if (emailError.status === 422) {
+          throw new Error(`EmailJS Unprocessable Entity (422): ${emailError.text || 'Template variables issue'}`)
+        } else {
+          throw new Error(`EmailJS Error (${emailError.status || 'Unknown'}): ${emailError.text || emailError.message || 'Unknown error'}`)
+        }
+      }
       
       console.log('EmailJS send result:', result)
 
@@ -95,12 +124,27 @@ export default function SubmitCompanyModal({ isOpen, onClose }) {
 
     } catch (error) {
       console.error('Error submitting form:', error)
-      console.error('Error details:', {
-        message: error.message,
-        name: error.name,
-        stack: error.stack,
-        ...error
-      })
+      
+      // Detailed error logging for debugging
+      console.error('Error type:', typeof error)
+      console.error('Error message:', error?.message || 'No message')
+      console.error('Error name:', error?.name || 'No name')
+      console.error('Error status:', error?.status || 'No status')
+      console.error('Error text:', error?.text || 'No text')
+      console.error('Error stack:', error?.stack || 'No stack')
+      
+      // Try to get more details from EmailJS error
+      if (error.text) {
+        console.error('EmailJS error text:', error.text)
+      }
+      if (error.status) {
+        console.error('EmailJS error status:', error.status)
+      }
+      
+      // Convert error to string representation
+      console.error('Error as string:', String(error))
+      console.error('Error JSON:', JSON.stringify(error, Object.getOwnPropertyNames(error)))
+      
       setSubmitStatus('error')
     } finally {
       setIsSubmitting(false)
@@ -110,7 +154,12 @@ export default function SubmitCompanyModal({ isOpen, onClose }) {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div 
+      className="fixed inset-0 flex items-center justify-center p-4 z-50"
+      style={{ 
+        background: 'linear-gradient(rgba(232, 240, 230, 0.8), rgba(232, 240, 230, 0.8)), white'
+      }}
+    >
       <div 
         className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
         style={{ backgroundColor: 'var(--warm-white)' }}
