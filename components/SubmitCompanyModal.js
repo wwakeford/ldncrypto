@@ -8,6 +8,7 @@ export default function SubmitCompanyModal({ isOpen, onClose }) {
     companyName: '',
     companyWebsite: '',
     companyTwitter: '',
+    companyPresence: '',
     yourName: '',
     yourEmail: '',
     message: ''
@@ -55,6 +56,7 @@ export default function SubmitCompanyModal({ isOpen, onClose }) {
         company_name: formData.companyName,
         company_website: formData.companyWebsite,
         company_twitter: formData.companyTwitter || 'Not provided',
+        company_presence: formData.companyPresence || 'Not provided',
         submitter_name: formData.yourName,
         submitter_email: formData.yourEmail,
         submitter_message: formData.message,
@@ -113,6 +115,7 @@ export default function SubmitCompanyModal({ isOpen, onClose }) {
         companyName: '',
         companyWebsite: '',
         companyTwitter: '',
+        companyPresence: '',
         yourName: '',
         yourEmail: '',
         message: ''
@@ -281,6 +284,42 @@ export default function SubmitCompanyModal({ isOpen, onClose }) {
                 onBlur={(e) => e.target.style.borderColor = 'var(--border-light)'}
                 placeholder="@companyhandle or https://twitter.com/companyhandle"
               />
+            </div>
+
+            <div>
+              <label 
+                htmlFor="companyPresence" 
+                className="block text-sm font-medium mb-2"
+                style={{ color: 'var(--charcoal)' }}
+              >
+                Company Presence
+              </label>
+              <select
+                id="companyPresence"
+                name="companyPresence"
+                value={formData.companyPresence}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-0 appearance-none cursor-pointer"
+                style={{ 
+                  borderColor: 'var(--border-light)',
+                  backgroundColor: 'var(--warm-white)',
+                  color: 'var(--charcoal)',
+                  backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23004225' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")",
+                  backgroundPosition: "right 0.5rem center",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "1.5em 1.5em",
+                  paddingRight: "2.5rem"
+                }}
+                onFocus={(e) => e.target.style.borderColor = 'var(--sage-green)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border-light)'}
+              >
+                <option value="">Select presence type...</option>
+                <option value="Physical Office">Physical Office</option>
+                <option value="Remote">Remote</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="Co-working Space">Co-working Space</option>
+                <option value="Unknown">Unknown</option>
+              </select>
             </div>
           </div>
 

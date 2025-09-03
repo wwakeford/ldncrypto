@@ -47,12 +47,13 @@ export async function POST(request) {
     // Prepare email content
     const emailSubject = `New Company Submission: ${data.companyName}`
     const emailBody = `
-New company submission received from MEMPOOL.LDN:
+New company submission received from The London Crypto Directory:
 
 COMPANY INFORMATION:
 - Company Name: ${data.companyName}
 - Company Website: ${data.companyWebsite}
 - Company Twitter: ${data.companyTwitter || 'Not provided'}
+- Company Presence: ${data.companyPresence || 'Not provided'}
 
 SUBMITTED BY:
 - Name: ${data.yourName}
@@ -63,7 +64,7 @@ ${data.message}
 
 ---
 Submitted at: ${new Date().toISOString()}
-From: MEMPOOL.LDN Company Submission Form
+From: The London Crypto Directory Company Submission Form
     `.trim()
 
     // For now, just log the submission and return success
@@ -79,7 +80,8 @@ From: MEMPOOL.LDN Company Submission Form
       company: {
         name: data.companyName,
         website: data.companyWebsite,
-        twitter: data.companyTwitter || 'Not provided'
+        twitter: data.companyTwitter || 'Not provided',
+        presence: data.companyPresence || 'Not provided'
       },
       submitter: {
         name: data.yourName,

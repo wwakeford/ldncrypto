@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import SubmitCompanyModal from '../components/SubmitCompanyModal'
+import WaitlistModal from '../components/WaitlistModal'
 
 export default function Home() {
   const [companies, setCompanies] = useState([])
@@ -13,6 +14,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [categories, setCategories] = useState([])
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
+  const [isWaitlistModalOpen, setIsWaitlistModalOpen] = useState(false)
 
   useEffect(() => {
     fetchCompanies()
@@ -59,7 +61,8 @@ export default function Home() {
         company.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         company.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         company.original_category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        company.twitter_handle?.toLowerCase().includes(searchTerm.toLowerCase())
+        company.twitter_handle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        company.presence?.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
 
@@ -181,7 +184,7 @@ export default function Home() {
             <div className="flex items-center">
               <div className="logo-container">
                 <h1 className="text-3xl font-bold tracking-tight" style={{ color: 'var(--british-racing-green)' }}>
-                  MEMPOOL.LDN
+                  The London Crypto Directory
                 </h1>
                 <div className="logo-underline"></div>
               </div>
@@ -190,8 +193,9 @@ export default function Home() {
               <button 
                 className="px-4 py-2 text-sm font-medium tracking-wide transition-colors hover:opacity-80"
                 style={{ color: 'var(--slate-gray)' }}
+                onClick={() => setIsWaitlistModalOpen(true)}
               >
-                COMPANIES
+                PEOPLE (COMING SOON)
               </button>
               <button 
                 className="px-6 py-2.5 text-sm font-medium tracking-wide border-2 transition-all duration-200 rounded-md hover:shadow-lg"
@@ -221,10 +225,10 @@ export default function Home() {
       <div className="text-center py-12 px-4" style={{ backgroundColor: 'var(--forest-mist)' }}>
         <div className="max-w-4xl mx-auto">
           <p className="text-lg font-medium mb-3" style={{ color: 'var(--charcoal)' }}>
-            In an attempt at solving the fragmented London crypto scene - enjoy the free value.
+            A Database of crypto firms in London built in an attempt to solve the fragmented crypto scene here.
           </p>
           <p className="text-base leading-relaxed" style={{ color: 'var(--slate-gray)' }}>
-            Idea & data by{' '}
+            Created by{' '}
             <a 
               href="https://x.com/_JonathanBreton" 
               target="_blank" 
@@ -237,7 +241,7 @@ export default function Home() {
             >
               @_JonathanBreton
             </a>
-            {' '}coded by{' '}
+            {' '}and coded by{' '}
             <a 
               href="https://x.com/willbuysdips" 
               target="_blank" 
@@ -261,7 +265,7 @@ export default function Home() {
           <div className="relative">
             <input
               type="text"
-              placeholder="Search companies, categories, or Twitter handles..."
+              placeholder="Search companies, categories, presence, or Twitter handles..."
               className="w-full px-6 py-4 text-lg border-2 rounded-lg search-focus transition-all duration-200 shadow-sm"
               style={{ 
                 borderColor: 'var(--border-light)',
@@ -331,6 +335,9 @@ export default function Home() {
                     CATEGORY
                   </th>
                   <th className="px-8 py-5 text-left text-sm font-semibold tracking-wider text-white">
+                    PRESENCE
+                  </th>
+                  <th className="px-8 py-5 text-left text-sm font-semibold tracking-wider text-white">
                     TWITTER/X
                   </th>
                 </tr>
@@ -356,6 +363,17 @@ export default function Home() {
                         }}
                       >
                         {displayCategory(company)}
+                      </div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div 
+                        className="text-sm px-3 py-1 rounded-full inline-block font-medium"
+                        style={{ 
+                          backgroundColor: company.presence === 'Unknown' ? 'var(--border-light)' : 'var(--forest-mist)',
+                          color: company.presence === 'Unknown' ? 'var(--slate-gray)' : 'var(--british-racing-green-light)'
+                        }}
+                      >
+                        {company.presence || 'Unknown'}
                       </div>
                     </td>
                     <td className="px-8 py-6">
@@ -401,6 +419,12 @@ export default function Home() {
       <SubmitCompanyModal 
         isOpen={isSubmitModalOpen}
         onClose={() => setIsSubmitModalOpen(false)}
+      />
+
+      {/* Waitlist Modal */}
+      <WaitlistModal 
+        isOpen={isWaitlistModalOpen}
+        onClose={() => setIsWaitlistModalOpen(false)}
       />
     </div>
   )

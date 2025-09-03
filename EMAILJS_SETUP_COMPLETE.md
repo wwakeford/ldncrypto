@@ -26,7 +26,7 @@ Even though you said you don't need a template, EmailJS still requires one. Here
 ```
 Subject: {{subject}}
 
-New Company Submission from MEMPOOL.LDN:
+New Company Submission from The London Crypto Directory:
 
 COMPANY INFORMATION:
 - Company Name: {{company_name}}

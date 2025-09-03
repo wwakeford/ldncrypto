@@ -2,8 +2,8 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'MEMPOOL.LON - London Crypto Directory',
-  description: 'A living directory of ongoing and emerging blockchain companies in London',
+  title: 'The London Crypto Directory',
+  description: 'A Database of crypto firms in London built in an attempt to solve the fragmented crypto scene here.',
 }
 
 export const viewport = {
